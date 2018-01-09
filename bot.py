@@ -342,8 +342,8 @@ class Modmail(commands.Bot):
             return await message.author.send(embed=self.blocked_em)
 
         em = discord.Embed(title='Thanks for the message!')
-        em.description = 'An officer will reply to this shortly!'
-        em.color = discord.Color.blue()
+        em.description = 'The moderation team will get back to you as soon as possible!'
+        em.color = discord.Color.green()
 
         if channel is not None:
             await self.send_mail(message, channel, mod=False)
