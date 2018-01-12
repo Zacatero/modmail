@@ -141,7 +141,7 @@ class Modmail(commands.Bot):
 
     def help_embed(self, prefix):
         em = discord.Embed(color=0x00FFFF)
-        em.set_author(name='Mod Mail - Help', icon_url=self.user.avatar_url)
+        em.set_author(name='Ticket - Help', icon_url=self.user.avatar_url)
         em.description = 'This bot is a python implementation of a stateless "Mod Mail" bot. ' \
                          'Made by verixx and improved by the suggestions of others. This bot ' \
                          'saves no data and utilises channel topics for storage and syncing.' 
@@ -150,7 +150,7 @@ class Modmail(commands.Bot):
         cmds = f'`{prefix}setup [modrole] <- (optional)` - Command that sets up the bot.\n' \
                f'`{prefix}reply <message...>` - Sends a message to the current thread\'s recipient.\n' \
                f'`{prefix}close` - Closes the current thread and deletes the channel.\n' \
-               f'`{prefix}disable` - Closes all threads and disables modmail for the server.\n' \
+               f'`{prefix}disable` - Closes all threads and disables Ticket Bot for the server.\n' \
                f'`{prefix}customstatus` - Sets the Bot status to whatever you want.'
 
         warn = 'Do not manually delete the category or channels as it will break the system. ' \
