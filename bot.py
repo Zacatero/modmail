@@ -238,7 +238,7 @@ class Modmail(commands.Bot):
         member = self.guild.get_member(user.id)
         avi = user.avatar_url
         time = datetime.datetime.utcnow()
-        desc = 'Modmail thread started.'
+        desc = 'Ticket Opened.'
         color = 0
 
         if member:
@@ -354,7 +354,7 @@ class Modmail(commands.Bot):
                 category=categ
                 )
             await channel.edit(topic=topic)
-            await channel.send('floobyhere', embed=self.format_info(author))
+            await channel.send('@here', embed=self.format_info(author))
             await channel.send('\u200b')
             await self.send_mail(message, channel, mod=False)
 
