@@ -341,7 +341,7 @@ class Modmail(commands.Bot):
         if str(message.author.id) in blocked:
             return await message.author.send(embed=self.blocked_em)
 
-        em = discord.Embed(title='Thanks for the message!')
+        em = discord.Embed(title='Thanks for the message! :ok_hand:')
         em.description = 'The moderation team will get back to you as soon as possible!'
         em.color = discord.Color.green()
 
@@ -354,7 +354,7 @@ class Modmail(commands.Bot):
                 category=categ
                 )
             await channel.edit(topic=topic)
-            await channel.send('@here', embed=self.format_info(author))
+            await channel.send('floobyhere', embed=self.format_info(author))
             await channel.send('\u200b')
             await self.send_mail(message, channel, mod=False)
 
