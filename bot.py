@@ -170,7 +170,7 @@ class Modmail(commands.Bot):
             return await ctx.send('This server is already set up.')
 
         categ = await ctx.guild.create_category(
-            name='Mod Mail', 
+            name='Tickets', 
             overwrites=self.overwrites(ctx, modrole=modrole)
             )
         await categ.edit(position=0)
