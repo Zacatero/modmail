@@ -373,7 +373,7 @@ class Modmail(commands.Bot):
                 category=categ
                 )
             await channel.edit(topic=topic)
-            await channel.send('@here', embed=self.format_info(author))
+            await channel.send('<@243065098246160385>', embed=self.format_info(author))
             await channel.send('\u200b')
             await self.send_mail(message, channel, mod=False)
 
