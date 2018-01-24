@@ -24,7 +24,7 @@ SOFTWARE.
 
 GUILD_ID = 405512033749041192 # your guild id here
 DEFAULT_PLAYING = "with the Forms" # your guild id here
-WHITELIST_ROLE = 0 # your whitelisted Role ID
+WHITELIST_ROLE = 405513176701075458 # your whitelisted Role ID
 
 import discord
 from discord.ext import commands
