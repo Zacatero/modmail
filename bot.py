@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-GUILD_ID = 0 # your guild id here
+GUILD_ID = 405512033749041192 # your guild id here
+DEFAULT_PLAYING = "with the Tickets" # your guild id here
+WHITELIST_ROLE = 405512936816115743 # your whitelisted Role ID
 
 import discord
 from discord.ext import commands
@@ -111,6 +113,16 @@ class Modmail(commands.Bot):
         from_heroku = os.environ.get('GUILD_ID')
         return int(from_heroku) if from_heroku else GUILD_ID
 
+    @property
+    def default_playing(self):
+        from_heroku = os.environ.get('DEFAULT_PLAYING')
+        return str(from_heroku) if from_heroku else DEFAULT_PLAYING
+
+    @property
+    def whitelist_role(self):
+        from_heroku = os.environ.get('WHITELIST_ROLL')
+        return int(from_heroku) if from_heroku else WHITELIST_ROLE
+
     async def on_ready(self):
         '''Bot startup, sets uptime.'''
         self.guild = discord.utils.get(self.guilds, id=self.guild_id)
@@ -124,6 +136,12 @@ class Modmail(commands.Bot):
         User ID: {self.user.id}
         ---------------
         '''))
+        await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
+        print(textwrap.dedent((f'''
+        ---------------
+        Changed Presence to Default
+        ---------------
+        ''')))
 
     def overwrites(self, ctx, modrole=None):
         '''Permision overwrites for the guild.'''
@@ -207,7 +225,7 @@ class Modmail(commands.Bot):
             return await ctx.send('This is not a modmail thread.')
         user_id = int(ctx.channel.topic.split(': ')[1])
         user = self.get_user(user_id)
-        em = discord.Embed(title='Ticket Closed <:purpleticket:401262037499641856>')
+        em = discord.Embed(title='Ticket Closed 👍')
         em.description = f'This thread has been closed by **{ctx.author}**.'
         em.color = discord.Color.red()
         try:
@@ -319,7 +337,7 @@ class Modmail(commands.Bot):
     @property
     def blocked_em(self):
         em = discord.Embed(title='Message not sent!', color=discord.Color.red())
-        em.description = 'You have been blocked from using modmail.'
+        em.description = 'You do not have permission to send Support Requests. If this is in error, please send your ticket to the Requests bot'
         return em
 
     async def process_modmail(self, message):
@@ -337,12 +355,13 @@ class Modmail(commands.Bot):
         top_chan = categ.channels[0] #bot-info
         blocked = top_chan.topic.split('Blocked\n-------')[1].strip().split('\n')
         blocked = [x.strip() for x in blocked]
+        user_roles = [str(role.id) for role in guild.get_member(author.id).roles]
 
-        if str(message.author.id) in blocked:
+        if str(message.author.id) in blocked or not (str(self.whitelist_role) in user_roles):
             return await message.author.send(embed=self.blocked_em)
 
-        em = discord.Embed(title='Your ticket has been opened! <:purpleticket:401262037499641856>')
-        em.description = 'The moderation team will get back to you as soon as possible!'
+        em = discord.Embed(title='Your ticket has been opened! 👍')
+        em.description = 'The team will get back to you as soon as possible!'
         em.color = discord.Color.green()
 
         if channel is not None:
@@ -381,6 +400,8 @@ class Modmail(commands.Bot):
         '''Set a custom playing status for the bot.'''
         if message == 'clear':
             return await self.change_presence(game=None)
+        if message == 'default':
+            return await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
         await self.change_presence(game=discord.Game(name=message), status=discord.Status.online)
         await ctx.send(f"Changed status to **{message}**")
 
