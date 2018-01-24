@@ -184,11 +184,11 @@ class Modmail(commands.Bot):
     @commands.has_permissions(administrator=True)
     async def setup(self, ctx, *, modrole: discord.Role=None):
         '''Sets up a server for modmail'''
-        if discord.utils.get(ctx.guild.categories, name='Tickets'):
+        if discord.utils.get(ctx.guild.categories, name='Support'):
             return await ctx.send('This server is already set up.')
 
         categ = await ctx.guild.create_category(
-            name='Tickets', 
+            name='Support', 
             overwrites=self.overwrites(ctx, modrole=modrole)
             )
         await categ.edit(position=0)
@@ -202,7 +202,7 @@ class Modmail(commands.Bot):
     @commands.has_permissions(administrator=True)
     async def disable(self, ctx):
         '''Close all threads and disable modmail.'''
-        categ = discord.utils.get(ctx.guild.categories, name='Tickets')
+        categ = discord.utils.get(ctx.guild.categories, name='Support')
         if not categ:
             return await ctx.send('This server is not set up.')
         for category, channels in ctx.guild.by_category():
@@ -225,7 +225,7 @@ class Modmail(commands.Bot):
             return await ctx.send('This is not a modmail thread.')
         user_id = int(ctx.channel.topic.split(': ')[1])
         user = self.get_user(user_id)
-        em = discord.Embed(title='Ticket Closed 👍')
+        em = discord.Embed(title='Support Ticket Closed 👍')
         em.description = f'This thread has been closed by **{ctx.author}**.'
         em.color = discord.Color.red()
         try:
@@ -337,7 +337,7 @@ class Modmail(commands.Bot):
     @property
     def blocked_em(self):
         em = discord.Embed(title='Message not sent!', color=discord.Color.red())
-        em.description = 'You do not have permission to send Support Requests. If this is in error, please send your ticket to the Requests bot'
+        em.description = 'You do not have permission to send Support Requests. This feature is only available to customers. If you would like to become a customer, send the proper form to the Request Bot'
         return em
 
     async def process_modmail(self, message):
@@ -351,7 +351,7 @@ class Modmail(commands.Bot):
         author = message.author
         topic = f'User ID: {author.id}'
         channel = discord.utils.get(guild.text_channels, topic=topic)
-        categ = discord.utils.get(guild.categories, name='Tickets')
+        categ = discord.utils.get(guild.categories, name='Support')
         top_chan = categ.channels[0] #bot-info
         blocked = top_chan.topic.split('Blocked\n-------')[1].strip().split('\n')
         blocked = [x.strip() for x in blocked]
@@ -389,7 +389,7 @@ class Modmail(commands.Bot):
         '''Reply to users using this command.'''
         categ = discord.utils.get(ctx.guild.categories, id=ctx.channel.category_id)
         if categ is not None:
-            if categ.name == 'Tickets':
+            if categ.name == 'Support':
                 if 'User ID:' in ctx.channel.topic:
                     ctx.message.content = msg
                     await self.process_reply(ctx.message)
@@ -415,7 +415,7 @@ class Modmail(commands.Bot):
             else:
                 return await ctx.send('No User ID provided.')
 
-        categ = discord.utils.get(ctx.guild.categories, name='Tickets')
+        categ = discord.utils.get(ctx.guild.categories, name='Support')
         top_chan = categ.channels[0] #bot-info
         topic = str(top_chan.topic)
         topic += id + '\n'
@@ -436,7 +436,7 @@ class Modmail(commands.Bot):
             else:
                 return await ctx.send('No User ID provided.')
 
-        categ = discord.utils.get(ctx.guild.categories, name='Tickets')
+        categ = discord.utils.get(ctx.guild.categories, name='Support')
         top_chan = categ.channels[0] #bot-info
         topic = str(top_chan.topic)
         topic = topic.replace(id+'\n', '')
