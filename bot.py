@@ -361,7 +361,7 @@ class Modmail(commands.Bot):
             return await message.author.send(embed=self.blocked_em)
 
         em = discord.Embed(title='Your form has been submitted! 👍')
-        em.description = 'The builder will get with you shortly!'
+        em.description = 'You will get a response here shortly!'
         em.color = discord.Color.green()
 
         if channel is not None:
