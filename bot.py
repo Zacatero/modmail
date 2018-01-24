@@ -23,7 +23,7 @@ SOFTWARE.
 '''
 
 GUILD_ID = 405512033749041192 # your guild id here
-DEFAULT_PLAYING = "with the Tickets" # your guild id here
+DEFAULT_PLAYING = "with the Request Forms" # your guild id here
 WHITELIST_ROLE = 405512936816115743 # your whitelisted Role ID
 
 import discord
