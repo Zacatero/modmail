@@ -225,7 +225,7 @@ class Modmail(commands.Bot):
             return await ctx.send('This is not a modmail thread.')
         user_id = int(ctx.channel.topic.split(': ')[1])
         user = self.get_user(user_id)
-        em = discord.Embed(title='Ticket Closed 👍')
+        em = discord.Embed(title='Form Closed 👍')
         em.description = f'This thread has been closed by **{ctx.author}**.'
         em.color = discord.Color.red()
         try:
@@ -360,8 +360,8 @@ class Modmail(commands.Bot):
         if str(message.author.id) in blocked or not (str(self.whitelist_role) in user_roles):
             return await message.author.send(embed=self.blocked_em)
 
-        em = discord.Embed(title='Your ticket has been opened! 👍')
-        em.description = 'The team will get back to you as soon as possible!'
+        em = discord.Embed(title='Your form has been submitted! 👍')
+        em.description = 'The builder will get with you shortly!'
         em.color = discord.Color.green()
 
         if channel is not None:
