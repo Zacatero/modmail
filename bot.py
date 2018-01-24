@@ -337,7 +337,7 @@ class Modmail(commands.Bot):
     @property
     def blocked_em(self):
         em = discord.Embed(title='Message not sent!', color=discord.Color.red())
-        em.description = 'You do not have permission to send Support Requests. This feature is only available to customers. If you would like to become a customer, send the proper form to the Request Bot'
+        em.description = 'You do not have permission to submit Support tickets. This feature is only available to customers. If you would like to become a customer, send the proper form to the <@405571420286877704> bot'
         return em
 
     async def process_modmail(self, message):
