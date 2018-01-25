@@ -331,7 +331,7 @@ class Modmail(commands.Bot):
                 new_name += letter
         if not new_name:
             new_name = 'null'
-        new_name += f'-{author.discriminator}'
+        new_name += f'-{author.discriminator} -R'
         return new_name
 
     @property
