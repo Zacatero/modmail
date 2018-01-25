@@ -360,8 +360,8 @@ class Modmail(commands.Bot):
         if str(message.author.id) in blocked or not (str(self.whitelist_role) in user_roles):
             return await message.author.send(embed=self.blocked_em)
 
-        em = discord.Embed(title='Your ticket has been opened! 👍')
-        em.description = 'The team will get back to you as soon as possible!'
+        em = discord.Embed(title='Your support ticket has been opened! 👌')
+        em.description = 'You will recieve a reply shortly. Thank you for your patience.'
         em.color = discord.Color.green()
 
         if channel is not None:
