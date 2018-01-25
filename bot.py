@@ -24,7 +24,8 @@ SOFTWARE.
 
 GUILD_ID = 405512033749041192 # your guild id here
 DEFAULT_PLAYING = "with the Tickets" # your guild id here
-WHITELIST_ROLE = 405512936816115743 # your whitelisted Role ID
+WHITELIST_ROLE = 0 # your whitelisted Role ID
+BOT_IDENTIFIER = 'Support'
 
 import discord
 from discord.ext import commands
@@ -123,6 +124,12 @@ class Modmail(commands.Bot):
         from_heroku = os.environ.get('WHITELIST_ROLL')
         return int(from_heroku) if from_heroku else WHITELIST_ROLE
 
+    @property
+    def bot_identifier(self):
+        from_heroku = os.environ.get('BOT_IDENTIFIER')
+        return str(from_heroku) if from_heroku else BOT_IDENTIFIER
+
+
     async def on_ready(self):
         '''Bot startup, sets uptime.'''
         self.guild = discord.utils.get(self.guilds, id=self.guild_id)
@@ -136,12 +143,20 @@ class Modmail(commands.Bot):
         User ID: {self.user.id}
         ---------------
         '''))
-        await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
-        print(textwrap.dedent((f'''
+        print(textwrap.dedent(f'''
+        Whitelist Role ID: {self.whitelist_role}
         ---------------
+        '''))
+        print(textwrap.dedent(f'''
+        Bot Identifier: \"{self.bot_identifier}\"
+        ---------------
+        '''))
+        await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
+        print(textwrap.dedent(f'''
         Changed Presence to Default
         ---------------
-        ''')))
+        '''))
+
 
     def overwrites(self, ctx, modrole=None):
         '''Permision overwrites for the guild.'''
@@ -188,7 +203,7 @@ class Modmail(commands.Bot):
             return await ctx.send('This server is already set up.')
 
         categ = await ctx.guild.create_category(
-            name='Tickets', 
+            name=self.bot_identifier+' Tickets',
             overwrites=self.overwrites(ctx, modrole=modrole)
             )
         await categ.edit(position=0)
@@ -202,26 +217,26 @@ class Modmail(commands.Bot):
     @commands.has_permissions(administrator=True)
     async def disable(self, ctx):
         '''Close all threads and disable modmail.'''
-        categ = discord.utils.get(ctx.guild.categories, name='Tickets')
+        categ = discord.utils.get(ctx.guild.categories, name=self.bot_identifier+' Tickets')
         if not categ:
             return await ctx.send('This server is not set up.')
         for category, channels in ctx.guild.by_category():
             if category == categ:
                 for chan in channels:
-                    if 'User ID:' in str(chan.topic):
+                    if f'{self.bot_identifier}-User ID:' in str(chan.topic):
                         user_id = int(chan.topic.split(': ')[1])
                         user = self.get_user(user_id)
                         await user.send(f'**{ctx.author}** has shutdown this program. If you believe this is an error, please let a Moderator know.')
                     await chan.delete()
         await categ.delete()
-        await ctx.send('Disabled modmail.')
+        await ctx.send(f'Disabled modmail{self.bot_identifier}.')
 
 
     @commands.command(name='close')
     @commands.has_permissions(manage_channels=True)
     async def _close(self, ctx):
         '''Close the current thread.'''
-        if 'User ID:' not in str(ctx.channel.topic):
+        if f'{self.bot_identifier}-User ID:' not in str(ctx.channel.topic):
             return await ctx.send('This is not a modmail thread.')
         user_id = int(ctx.channel.topic.split(': ')[1])
         user = self.get_user(user_id)
@@ -270,7 +285,7 @@ class Modmail(commands.Bot):
         em = discord.Embed(colour=color, description=desc, timestamp=time)
 
         em.add_field(name='Account Created', value=str((time - user.created_at).days)+' days ago.')
-        em.set_footer(text='User ID: '+str(user.id))
+        em.set_footer(text=f'{self.bot_identifier}-User ID:'+str(user.id))
         em.set_thumbnail(url=avi)
         em.set_author(name=user, icon_url=server.icon_url)
 
@@ -349,15 +364,17 @@ class Modmail(commands.Bot):
 
         guild = self.guild
         author = message.author
-        topic = f'User ID: {author.id}'
+        topic = f'{self.bot_identifier}-User ID: {author.id}'
         channel = discord.utils.get(guild.text_channels, topic=topic)
-        categ = discord.utils.get(guild.categories, name='Tickets')
+        categ = discord.utils.get(guild.categories, name=self.bot_identifier+' Tickets')
         top_chan = categ.channels[0] #bot-info
         blocked = top_chan.topic.split('Blocked\n-------')[1].strip().split('\n')
         blocked = [x.strip() for x in blocked]
         user_roles = [str(role.id) for role in guild.get_member(author.id).roles]
+        user_roles.append("0") # If no Whitelist role is specificed, disable whitelist
 
         if str(message.author.id) in blocked or not (str(self.whitelist_role) in user_roles):
+            print(user_roles)
             return await message.author.send(embed=self.blocked_em)
 
         em = discord.Embed(title='Your ticket has been opened! 👍')
@@ -389,8 +406,8 @@ class Modmail(commands.Bot):
         '''Reply to users using this command.'''
         categ = discord.utils.get(ctx.guild.categories, id=ctx.channel.category_id)
         if categ is not None:
-            if categ.name == 'Tickets':
-                if 'User ID:' in ctx.channel.topic:
+            if categ.name == (self.bot_identifier+' Tickets'):
+                if f'{self.bot_identifier}-User ID:' in ctx.channel.topic:
                     ctx.message.content = msg
                     await self.process_reply(ctx.message)
 
@@ -410,12 +427,12 @@ class Modmail(commands.Bot):
     async def block(self, ctx, id=None):
         '''Block a user from using modmail.'''
         if id is None:
-            if 'User ID:' in str(ctx.channel.topic):
-                id = ctx.channel.topic.split('User ID: ')[1].strip()
+            if f'{self.bot_identifier}-User ID:' in str(ctx.channel.topic):
+                id = ctx.channel.topic.split(f'{self.bot_identifier}-User ID: ')[1].strip()
             else:
                 return await ctx.send('No User ID provided.')
 
-        categ = discord.utils.get(ctx.guild.categories, name='Tickets')
+        categ = discord.utils.get(ctx.guild.categories, name=self.bot_identifier+' Tickets')
         top_chan = categ.channels[0] #bot-info
         topic = str(top_chan.topic)
         topic += id + '\n'
@@ -431,12 +448,12 @@ class Modmail(commands.Bot):
     async def unblock(self, ctx, id=None):
         '''Unblocks a user from using modmail.'''
         if id is None:
-            if 'User ID:' in str(ctx.channel.topic):
+            if f'{self.bot_identifier}-User ID:' in str(ctx.channel.topic):
                 id = ctx.channel.topic.split('User ID: ')[1].strip()
             else:
                 return await ctx.send('No User ID provided.')
 
-        categ = discord.utils.get(ctx.guild.categories, name='Tickets')
+        categ = discord.utils.get(ctx.guild.categories, name=self.bot_identifier+' Tickets')
         top_chan = categ.channels[0] #bot-info
         topic = str(top_chan.topic)
         topic = topic.replace(id+'\n', '')
