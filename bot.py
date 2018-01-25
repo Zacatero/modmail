@@ -369,7 +369,7 @@ class Modmail(commands.Bot):
         else:
             await message.author.send(embed=em)
             channel = await guild.create_text_channel(
-                name=self.format_name(author) test,
+                name=self.format_name(author),
                 category=categ
                 )
             await channel.edit(topic=topic)
