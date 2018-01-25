@@ -325,13 +325,13 @@ class Modmail(commands.Bot):
 
     def format_name(self, author):
         name = author.name
-        new_name = ''
+        new_name = 'test'
         for letter in name:
             if letter in string.ascii_letters + string.digits:
                 new_name += letter
         if not new_name:
             new_name = 'null'
-        new_name += f'-{author.discriminator} -R'
+        new_name += f'-{author.discriminator}'
         return new_name
 
     @property
