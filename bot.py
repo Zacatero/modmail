@@ -121,7 +121,7 @@ class Modmail(commands.Bot):
 
     @property
     def whitelist_role(self):
-        from_heroku = os.environ.get('WHITELIST_ROLL')
+        from_heroku = os.environ.get('WHITELIST_ROLE')
         return int(from_heroku) if from_heroku else WHITELIST_ROLE
 
     @property
