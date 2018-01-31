@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 GUILD_ID = 0 # your guild id here
+DEFAULT_PLAYING = "PM me for help!!" # your guild id here
 
 import discord
 from discord.ext import commands
@@ -110,6 +111,11 @@ class Modmail(commands.Bot):
     def guild_id(self):
         from_heroku = os.environ.get('GUILD_ID')
         return int(from_heroku) if from_heroku else GUILD_ID
+    
+    @property
+    def default_playing(self):
+        from_heroku = os.environ.get('DEFAULT_PLAYING')
+        return str(from_heroku) if from_heroku else DEFAULT_PLAYING
 
     async def on_ready(self):
         '''Bot startup, sets uptime.'''
@@ -124,6 +130,12 @@ class Modmail(commands.Bot):
         User ID: {self.user.id}
         ---------------
         '''))
+        await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
+        print(textwrap.dedent((f'''
+        ---------------
+        Changed Presence to Default
+        ---------------
+        ''')))
 
     def overwrites(self, ctx, modrole=None):
         '''Permision overwrites for the guild.'''
