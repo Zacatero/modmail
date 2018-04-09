@@ -300,7 +300,7 @@ class Modmail(commands.Bot):
         if mod:
             fmt.color=discord.Color.green()
             fmt.set_author(name=str(author), icon_url=author.avatar_url)
-            fmt.set_footer(text='Moderator')
+            fmt.set_footer(text='Administrator')
         else:
             fmt.color=discord.Color.gold()
             fmt.set_author(name=str(author), icon_url=author.avatar_url)
