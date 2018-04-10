@@ -151,7 +151,7 @@ class Modmail(commands.Bot):
         Bot Identifier: \"{self.bot_identifier}\"
         ---------------
         '''))
-        await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
+        await self.change_presence(activity=discord.Game(name=self.default_playing), status=discord.Status.online)
         print(textwrap.dedent(f'''
         Changed Presence to Default
         ---------------
@@ -416,10 +416,10 @@ class Modmail(commands.Bot):
     async def _status(self, ctx, *, message):
         '''Set a custom playing status for the bot.'''
         if message == 'clear':
-            return await self.change_presence(game=None)
+            return await self.change_presence(activity=None)
         if message == 'default':
-            return await self.change_presence(game=discord.Game(name=self.default_playing), status=discord.Status.online)
-        await self.change_presence(game=discord.Game(name=message), status=discord.Status.online)
+            return await self.change_presence(activity=discord.Game(name=self.default_playing), status=discord.Status.online)
+        await self.change_presence(activity=discord.Game(name=message), status=discord.Status.online)
         await ctx.send(f"Changed status to **{message}**")
 
     @commands.command()
